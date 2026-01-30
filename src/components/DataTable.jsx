@@ -2,10 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { schemaAPI } from '../services/api'
 import './DataTable.css'
 
-function DataTable({ columns, rows, schemaName, pagination: initialPagination, showCheckboxes = false, onSelectionChange }) {
+function DataTable({ columns, rows, schemaName, pagination: initialPagination, onSelectionChange }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedRow, setSelectedRow] = useState(null)
   const [selectedItems, setSelectedItems] = useState(new Set())
   const [tableData, setTableData] = useState({ columns: columns || [], rows: rows || [] })
   const [pagination, setPagination] = useState(initialPagination || { total: 0, totalPages: 0, page: 1, limit: 10 })
@@ -81,27 +80,17 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
     }
   }
 
-  // Handle checkbox selection
-  const handleCheckboxChange = (rowId, checked) => {
+  // Handle row selection
+  const handleRowSelection = (row) => {
+    const rowId = getRowId(row)
     const newSelectedItems = new Set(selectedItems)
-    if (checked) {
-      newSelectedItems.add(rowId)
-    } else {
+    
+    if (newSelectedItems.has(rowId)) {
       newSelectedItems.delete(rowId)
+    } else {
+      newSelectedItems.add(rowId)
     }
-    setSelectedItems(newSelectedItems)
-    if (onSelectionChange) {
-      onSelectionChange(newSelectedItems)
-    }
-  }
-
-  const handleSelectAll = (checked) => {
-    const newSelectedItems = new Set()
-    if (checked) {
-      paginatedRows.forEach(row => {
-        newSelectedItems.add(getRowId(row))
-      })
-    }
+    
     setSelectedItems(newSelectedItems)
     if (onSelectionChange) {
       onSelectionChange(newSelectedItems)
@@ -114,7 +103,8 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
   }
 
   const handleRowClick = (row) => {
-    setSelectedRow(selectedRow === row ? null : row)
+    // Toggle selection instead of showing details
+    handleRowSelection(row)
   }
 
   return (
@@ -146,19 +136,9 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
             <p>Loading data...</p>
           </div>
         ) : (
-          <table className={`data-table ${showCheckboxes ? 'show-checkboxes' : ''}`}>
+          <table className="data-table">
             <thead>
               <tr>
-                {showCheckboxes && (
-                  <th className="table-header checkbox-header">
-                    <input
-                      type="checkbox"
-                      className="checkbox-input"
-                      checked={paginatedRows.length > 0 && paginatedRows.every(row => selectedItems.has(getRowId(row)))}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                    />
-                  </th>
-                )}
                 {tableData.columns.map((column, index) => (
                   <th key={index} className="table-header">
                     {column.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -174,19 +154,9 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
                   return (
                     <tr
                       key={rowIndex}
-                      className={`table-row ${selectedRow === row ? 'selected' : ''} ${isSelected ? 'row-selected' : ''}`}
+                      className={`table-row ${isSelected ? 'row-selected' : ''}`}
                       onClick={() => handleRowClick(row)}
                     >
-                      {showCheckboxes && (
-                        <td className="table-cell checkbox-cell" onClick={(e) => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            className="checkbox-input"
-                            checked={isSelected}
-                            onChange={(e) => handleCheckboxChange(rowId, e.target.checked)}
-                          />
-                        </td>
-                      )}
                       {tableData.columns.map((column, colIndex) => (
                         <td key={colIndex} className="table-cell">
                           {row[column] || '-'}
@@ -197,7 +167,7 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
                 })
               ) : (
                 <tr>
-                  <td colSpan={tableData.columns.length + (showCheckboxes ? 1 : 0)} className="no-data">
+                  <td colSpan={tableData.columns.length} className="no-data">
                     No data found
                   </td>
                 </tr>
@@ -206,25 +176,6 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
           </table>
         )}
       </div>
-
-      {selectedRow && (
-        <div className="row-details glass">
-          <div className="row-details-header">
-            <h3>Row Details</h3>
-            <button className="close-button" onClick={() => setSelectedRow(null)}>×</button>
-          </div>
-          <div className="row-details-content">
-            {tableData.columns.map((column) => (
-              <div key={column} className="detail-item">
-                <span className="detail-label">
-                  {column.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
-                </span>
-                <span className="detail-value">{selectedRow[column] || '-'}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {totalPages > 1 && (
         <div className="pagination">

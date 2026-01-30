@@ -161,6 +161,18 @@ export const promotionAPI = {
     })
   },
 
+  // Get unsaved promotion fees data (excluding already saved items)
+  getUnsavedData: async (page = 1, limit = 50, scrapeTime = null) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(scrapeTime && { scrapeTime }),
+    })
+    
+    const response = await apiRequest(`/promotion/unsaved-data?${params}`)
+    return response
+  },
+
   getData: async (page = 1, limit = 50, scrapeTime = null) => {
     const params = new URLSearchParams({
       page: page.toString(),

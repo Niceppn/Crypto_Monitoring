@@ -46,21 +46,31 @@ router.post('/run', verifyToken, async (req, res) => {
   }
 })
 
-// Get promotion fees data
-router.get('/data', verifyToken, (req, res) => {
+// Get promotion fees data (excluding saved items)
+router.get('/unsaved-data', verifyToken, (req, res) => {
   try {
     const db = getDatabase()
     const { page = 1, limit = 50, scrapeTime } = req.query
 
-    let query = 'SELECT * FROM promotion_fees'
+    let query = `
+      SELECT pf.* 
+      FROM promotion_fees pf
+      LEFT JOIN saved_promotion_fees spf ON (
+        pf.symbol = spf.symbol AND 
+        pf.maker_fee = spf.maker_fee AND 
+        pf.taker_fee = spf.taker_fee AND 
+        pf.scrape_time = spf.scrape_time
+      )
+      WHERE spf.id IS NULL
+    `
     const params = []
 
     if (scrapeTime) {
-      query += ' WHERE scrape_time = ?'
+      query += ' AND pf.scrape_time = ?'
       params.push(scrapeTime)
     }
 
-    query += ' ORDER BY created_at DESC'
+    query += ' ORDER BY pf.created_at DESC'
 
     const pageNum = parseInt(page)
     const limitNum = parseInt(limit)
@@ -72,9 +82,19 @@ router.get('/data', verifyToken, (req, res) => {
     const rows = db.prepare(query).all(...params)
 
     // Get total count
-    let countQuery = 'SELECT COUNT(*) as total FROM promotion_fees'
+    let countQuery = `
+      SELECT COUNT(*) as total 
+      FROM promotion_fees pf
+      LEFT JOIN saved_promotion_fees spf ON (
+        pf.symbol = spf.symbol AND 
+        pf.maker_fee = spf.maker_fee AND 
+        pf.taker_fee = spf.taker_fee AND 
+        pf.scrape_time = spf.scrape_time
+      )
+      WHERE spf.id IS NULL
+    `
     if (scrapeTime) {
-      countQuery += ' WHERE scrape_time = ?'
+      countQuery += ' AND pf.scrape_time = ?'
     }
     const total = db.prepare(countQuery).get(scrapeTime ? [scrapeTime] : []).total
 
@@ -89,8 +109,8 @@ router.get('/data', verifyToken, (req, res) => {
       }
     })
   } catch (error) {
-    console.error('Error fetching promotion fees:', error)
-    res.status(500).json({ error: 'Failed to fetch promotion fees' })
+    console.error('Error fetching unsaved promotion fees:', error)
+    res.status(500).json({ error: 'Failed to fetch unsaved promotion fees' })
   }
 })
 

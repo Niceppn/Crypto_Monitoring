@@ -205,7 +205,6 @@ function SavedItems({ onLogout }) {
                   saved_at: row.saved_at ? new Date(row.saved_at).toLocaleString() : ''
                 }))}
                 pagination={data.pagination}
-                showCheckboxes={true}
                 onSelectionChange={(selectedSet) => {
                   // Handle selection for deletion
                   if (selectedSet.size > 0) {
