@@ -29,17 +29,21 @@
 .checkbox-header {
   width: 60px;
   min-width: 60px;
+  max-width: 60px;
   text-align: center;
   vertical-align: middle;
   padding: 20px 15px !important;
+  box-sizing: border-box;
 }
 
 .checkbox-cell {
   width: 60px;
   min-width: 60px;
+  max-width: 60px;
   text-align: center;
   vertical-align: middle;
   padding: 20px 15px !important;
+  box-sizing: border-box;
 }
 
 .row-selected {
@@ -105,6 +109,13 @@
   width: 100%;
   border-collapse: collapse;
   background: transparent;
+  table-layout: fixed;
+}
+
+/* Distribute remaining width equally among data columns */
+.data-table th:not(.checkbox-header),
+.data-table td:not(.checkbox-cell) {
+  width: calc((100% - 60px) / 5); /* 5 columns for symbol, maker_fee, taker_fee, scrape_time, created_at */
 }
 
 .table-header {
@@ -122,6 +133,9 @@
   z-index: 10;
   backdrop-filter: blur(10px);
   vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-row {
@@ -166,6 +180,9 @@
   font-weight: 400;
   border-right: 1px solid rgba(59, 130, 246, 0.05);
   vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-cell:last-child {
