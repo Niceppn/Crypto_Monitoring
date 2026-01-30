@@ -27,14 +27,19 @@
 }
 
 .checkbox-header {
-  width: 50px;
+  width: 60px;
+  min-width: 60px;
   text-align: center;
+  vertical-align: middle;
+  padding: 20px 15px !important;
 }
 
 .checkbox-cell {
-  width: 50px;
+  width: 60px;
+  min-width: 60px;
   text-align: center;
-  padding: 20px 10px !important;
+  vertical-align: middle;
+  padding: 20px 15px !important;
 }
 
 .row-selected {
@@ -116,6 +121,7 @@
   top: 0;
   z-index: 10;
   backdrop-filter: blur(10px);
+  vertical-align: middle;
 }
 
 .table-row {
@@ -159,6 +165,7 @@
   word-break: break-word;
   font-weight: 400;
   border-right: 1px solid rgba(59, 130, 246, 0.05);
+  vertical-align: middle;
 }
 
 .table-cell:last-child {
