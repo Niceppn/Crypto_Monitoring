@@ -290,10 +290,53 @@
 
 .empty-text {
   color: var(--text-secondary);
-  font-size: 18px;
-  font-weight: 400;
-  max-width: 400px;
-  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* Simple Table Styles */
+.simple-table-container {
+  background: rgba(15, 15, 35, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+}
+
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.simple-table th {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.08));
+  color: #c4b5fd;
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.simple-table td {
+  padding: 16px 20px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.simple-table tr:hover td {
+  color: var(--text-primary);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(167, 139, 250, 0.05));
+}
+
+.simple-table tr:hover {
+  cursor: pointer;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
 }
 
 @media (max-width: 768px) {

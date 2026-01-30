@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { promotionAPI, authAPI } from '../services/api'
 import Sidebar from './Sidebar'
-import ModernTable from './ModernTable'
 import './PromotionFee.css'
 
 function PromotionFee({ onLogout }) {
@@ -225,17 +224,52 @@ function PromotionFee({ onLogout }) {
                   Showing {data.pagination?.total || data.data.length} records
                 </div>
               </div>
-              <ModernTable
-                columns={columns}
-                rows={data.data.map(row => ({
-                  maker_fee: row.maker_fee || '',
-                  taker_fee: row.taker_fee || '',
-                  scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
-                  created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
-                }))}
-                pagination={data.pagination}
-                onSelectionChange={handleSelectionChange}
-              />
+              <div className="simple-table-container">
+                <table className="simple-table">
+                  <thead>
+                    <tr>
+                      <th>Symbol</th>
+                      <th>Maker Fee</th>
+                      <th>Taker Fee</th>
+                      <th>Scrape Time</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.data.map((row, index) => {
+                      const isSelected = selectedItems.has(JSON.stringify({
+                        symbol: row.symbol || '',
+                        maker_fee: row.maker_fee || '',
+                        taker_fee: row.taker_fee || '',
+                        scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
+                        created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
+                      }))
+                      return (
+                        <tr
+                          key={index}
+                          className={isSelected ? 'selected-row' : ''}
+                          onClick={() => handleSelectionChange({
+                        ...selectedItems,
+                        [JSON.stringify({
+                          symbol: row.symbol || '',
+                          maker_fee: row.maker_fee || '',
+                          taker_fee: row.taker_fee || '',
+                          scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
+                          created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
+                        })]: isSelected ? false : true
+                          })}
+                        >
+                          <td>{row.symbol || '-'}</td>
+                          <td>{row.maker_fee || '-'}</td>
+                          <td>{row.taker_fee || '-'}</td>
+                          <td>{row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '-'}</td>
+                          <td>{row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <div className="empty-state">
