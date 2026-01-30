@@ -112,10 +112,41 @@
   table-layout: fixed;
 }
 
-/* Distribute remaining width equally among data columns */
-.data-table th:not(.checkbox-header),
-.data-table td:not(.checkbox-cell) {
-  width: calc((100% - 60px) / 5); /* 5 columns for symbol, maker_fee, taker_fee, scrape_time, created_at */
+/* Explicit column widths */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 60px; /* Checkbox column */
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 120px; /* Symbol column */
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 100px; /* Maker Fee column */
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  width: 100px; /* Taker Fee column */
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  width: 180px; /* Scrape Time column */
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+  width: 180px; /* Created At column */
+}
+
+/* Remaining columns get auto width */
+.data-table th:nth-child(n+7),
+.data-table td:nth-child(n+7) {
+  width: auto;
 }
 
 .table-header {
