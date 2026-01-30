@@ -204,6 +204,15 @@ router.post('/save-selected', verifyToken, (req, res) => {
     // Begin transaction
     const transaction = db.transaction(() => {
       items.forEach(item => {
+        // Convert date formats to match database format
+        const isoScrapeTime = item.scrape_time.includes('T') 
+          ? item.scrape_time 
+          : new Date(item.scrape_time).toISOString()
+        
+        const isoCreatedAt = item.created_at.includes('T') 
+          ? item.created_at 
+          : new Date(item.created_at).toISOString()
+
         // Check if item already exists
         const existing = db.prepare(`
           SELECT id FROM saved_promotion_fees 
@@ -212,11 +221,11 @@ router.post('/save-selected', verifyToken, (req, res) => {
           item.symbol,
           item.maker_fee,
           item.taker_fee,
-          item.scrape_time
+          isoScrapeTime
         )
 
         if (!existing) {
-          // Insert new saved item
+          // Insert new saved item with ISO format
           const result = db.prepare(`
             INSERT INTO saved_promotion_fees (symbol, maker_fee, taker_fee, scrape_time, created_at, saved_at)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -224,12 +233,12 @@ router.post('/save-selected', verifyToken, (req, res) => {
             item.symbol,
             item.maker_fee,
             item.taker_fee,
-            item.scrape_time,
-            item.created_at,
+            isoScrapeTime,
+            isoCreatedAt,
             now
           )
           savedItems.push({ id: result.lastInsertRowid, ...item, saved_at: now })
-          console.log('Saved item:', item.symbol) // Debug
+          console.log('Saved item with ISO time:', item.symbol, isoScrapeTime) // Debug
         } else {
           console.log('Item already saved:', item.symbol) // Debug
         }

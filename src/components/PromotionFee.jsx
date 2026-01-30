@@ -257,12 +257,16 @@ function PromotionFee({ onLogout }) {
                   </thead>
                   <tbody>
                     {data.data.map((row, index) => {
+                      // Convert scrape_time to ISO format for consistent comparison
+                      const isoScrapeTime = row.scrape_time ? new Date(row.scrape_time).toISOString() : ''
+                      const isoCreatedAt = row.created_at ? new Date(row.created_at).toISOString() : ''
+                      
                       const rowId = JSON.stringify({
                         symbol: row.symbol || '',
                         maker_fee: row.maker_fee || '',
                         taker_fee: row.taker_fee || '',
-                        scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
-                        created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
+                        scrape_time: isoScrapeTime,
+                        created_at: isoCreatedAt
                       })
                       const isSelected = selectedItems.has(rowId)
                       
