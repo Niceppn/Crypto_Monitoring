@@ -24,10 +24,20 @@ function PromotionFee({ onLogout }) {
       setIsLoading(true)
       setError('')
       const response = await promotionAPI.getData(1, 50, '')
-      setData(response)
+      console.log('API Response:', response) // Debug
+      
+      // API returns { success: true, data: {...}, pagination: {...} }
+      if (response && response.success && response.data) {
+        setData(response.data)
+      } else if (response && response.data) {
+        setData(response)
+      } else {
+        setData(response)
+      }
     } catch (err) {
       setError(err.message || 'Failed to load data')
       console.error('Error fetching data:', err)
+      setData(null)
     } finally {
       setIsLoading(false)
     }
@@ -52,6 +62,8 @@ function PromotionFee({ onLogout }) {
       
       if (response.success) {
         setSuccess('Scraping completed successfully!')
+        // Wait a bit for database to be updated
+        await new Promise(resolve => setTimeout(resolve, 1000))
         // Refresh data after scraping
         await fetchData()
         await fetchStats()
@@ -143,21 +155,26 @@ function PromotionFee({ onLogout }) {
               <div className="spinner"></div>
               <p>Loading data...</p>
             </div>
-          ) : data && data.data && data.data.length > 0 ? (
+          ) : data && data.data && Array.isArray(data.data) && data.data.length > 0 ? (
             <div className="data-section glass">
+              <div className="data-header">
+                <div className="data-info">
+                  Showing {data.pagination?.total || (data.data ? data.data.length : (Array.isArray(data) ? data.length : 0))} records
+                </div>
+              </div>
               <DataTable
                 columns={columns}
                 rows={data.data.map(row => ({
-                  symbol: row.symbol,
-                  maker_fee: row.maker_fee,
-                  taker_fee: row.taker_fee,
-                  scrape_time: new Date(row.scrape_time).toLocaleString(),
-                  created_at: new Date(row.created_at).toLocaleString()
+                  symbol: row.symbol || '',
+                  maker_fee: row.maker_fee || '',
+                  taker_fee: row.taker_fee || '',
+                  scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
+                  created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
                 }))}
                 pagination={data.pagination}
               />
             </div>
-          ) : (
+          ) : !isLoading ? (
             <div className="empty-state">
               <div className="empty-icon">📊</div>
               <p className="empty-text">No data available. Click "Run Scraper" to start scraping.</p>

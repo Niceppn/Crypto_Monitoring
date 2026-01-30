@@ -103,6 +103,18 @@
   overflow: hidden;
 }
 
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.data-info {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
 .loading-container {
   display: flex;
   flex-direction: column;

@@ -169,7 +169,7 @@ export const promotionAPI = {
     })
     
     const response = await apiRequest(`/promotion/data?${params}`)
-    return response.data
+    return response
   },
 
   getHistory: async () => {
