@@ -104,11 +104,12 @@
   border-collapse: separate;
   border-spacing: 0;
   background: transparent;
+  table-layout: fixed;
 }
 
 /* Table Header */
 .table-header-row {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1));
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.08));
 }
 
 .table-header-cell {
@@ -183,6 +184,31 @@
   transform: scaleY(1);
 }
 
+/* Table Cell Widths - 4 columns only */
+.table-header-cell:nth-child(1),
+.table-cell:nth-child(1) {
+  width: 120px; /* Maker Fee */
+  min-width: 120px;
+}
+
+.table-header-cell:nth-child(2),
+.table-cell:nth-child(2) {
+  width: 120px; /* Taker Fee */
+  min-width: 120px;
+}
+
+.table-header-cell:nth-child(3),
+.table-cell:nth-child(3) {
+  width: 250px; /* Scrape Time */
+  min-width: 230px;
+}
+
+.table-header-cell:nth-child(4),
+.table-cell:nth-child(4) {
+  width: 250px; /* Created At */
+  min-width: 230px;
+}
+
 /* Table Cells */
 .table-cell {
   padding: 16px 20px;
@@ -201,7 +227,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
 }
 
 .table-row:hover .cell-content {

@@ -129,7 +129,7 @@ function PromotionFee({ onLogout }) {
     navigate('/login')
   }
 
-  const columns = ['symbol', 'maker_fee', 'taker_fee', 'scrape_time', 'created_at']
+  const columns = ['maker_fee', 'taker_fee', 'scrape_time', 'created_at']
 
   return (
     <div className="dashboard">
@@ -228,7 +228,6 @@ function PromotionFee({ onLogout }) {
               <ModernTable
                 columns={columns}
                 rows={data.data.map(row => ({
-                  symbol: row.symbol || '',
                   maker_fee: row.maker_fee || '',
                   taker_fee: row.taker_fee || '',
                   scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
