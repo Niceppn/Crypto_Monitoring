@@ -228,7 +228,7 @@ function PromotionFee({ onLogout }) {
               <DataTable
                 columns={columns}
                 rows={data.data.map(row => ({
-                  symbol: row.symbol || '',
+               
                   maker_fee: row.maker_fee || '',
                   taker_fee: row.taker_fee || '',
                   scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
