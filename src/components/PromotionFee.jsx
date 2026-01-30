@@ -77,8 +77,14 @@ function PromotionFee({ onLogout }) {
     }
   }
 
-  const handleSelectionChange = (selectedSet) => {
-    setSelectedItems(selectedSet)
+  const handleSelectionChange = (newSelection) => {
+    // newSelection can be a Set or an object, ensure it's a Set
+    if (newSelection instanceof Set) {
+      setSelectedItems(newSelection)
+    } else if (typeof newSelection === 'object') {
+      // Convert object to Set
+      setSelectedItems(new Set(Object.keys(newSelection).filter(key => newSelection[key])))
+    }
   }
 
   const handleSaveSelected = async () => {
@@ -244,27 +250,30 @@ function PromotionFee({ onLogout }) {
                   </thead>
                   <tbody>
                     {data.data.map((row, index) => {
-                      const isSelected = selectedItems.has(JSON.stringify({
+                      const rowId = JSON.stringify({
                         symbol: row.symbol || '',
                         maker_fee: row.maker_fee || '',
                         taker_fee: row.taker_fee || '',
                         scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
                         created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
-                      }))
+                      })
+                      const isSelected = selectedItems.has(rowId)
+                      
+                      const handleRowClick = () => {
+                        const newSelectedItems = new Set(selectedItems)
+                        if (isSelected) {
+                          newSelectedItems.delete(rowId)
+                        } else {
+                          newSelectedItems.add(rowId)
+                        }
+                        setSelectedItems(newSelectedItems)
+                      }
+                      
                       return (
                         <tr
                           key={index}
                           className={isSelected ? 'selected-row' : ''}
-                          onClick={() => handleSelectionChange({
-                        ...selectedItems,
-                        [JSON.stringify({
-                          symbol: row.symbol || '',
-                          maker_fee: row.maker_fee || '',
-                          taker_fee: row.taker_fee || '',
-                          scrape_time: row.scrape_time ? new Date(row.scrape_time).toLocaleString() : '',
-                          created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
-                        })]: isSelected ? false : true
-                          })}
+                          onClick={handleRowClick}
                         >
                           <td>{row.symbol || '-'}</td>
                           <td>{row.maker_fee || '-'}</td>
