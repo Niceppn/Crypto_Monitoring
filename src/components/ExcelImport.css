@@ -1,0 +1,211 @@
+.excel-import {
+  min-height: calc(100vh - 80px);
+  background: var(--bg-primary);
+  padding: 40px;
+}
+
+.excel-import-header {
+  margin-bottom: 32px;
+}
+
+.excel-import-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.excel-import-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.excel-import-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.upload-section {
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.upload-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.upload-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  padding: 12px 24px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.file-label:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--accent-blue);
+}
+
+.message {
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.success-message {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+.data-section {
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.data-stats {
+  display: flex;
+  gap: 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.selected-count {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.unselected-count {
+  color: var(--text-muted);
+}
+
+.data-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-secondary);
+}
+
+.data-table thead {
+  background: var(--bg-tertiary);
+}
+
+.data-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.checkbox-column {
+  width: 50px;
+  text-align: center;
+}
+
+.data-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.data-table tbody tr.selected {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.data-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-blue);
+}
+
+@media (max-width: 768px) {
+  .excel-import {
+    padding: 24px 20px;
+  }
+
+  .data-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .data-actions {
+    flex-direction: column;
+  }
+
+  .upload-controls {
+    flex-direction: column;
+  }
+
+  .file-label {
+    width: 100%;
+    text-align: center;
+  }
+}
+

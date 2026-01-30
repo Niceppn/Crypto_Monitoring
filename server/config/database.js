@@ -121,6 +121,43 @@ export const initializeDatabase = () => {
     )
   `)
 
+  // Create binance_fees_selected table (สำหรับข้อมูลที่เลือก)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS binance_fees_selected (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      maker_fee TEXT NOT NULL,
+      taker_fee TEXT NOT NULL,
+      import_time TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  // Create binance_fees_unselected table (สำหรับข้อมูลที่ไม่เลือก)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS binance_fees_unselected (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      maker_fee TEXT NOT NULL,
+      taker_fee TEXT NOT NULL,
+      import_time TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  // Create import_history table (เก็บประวัติการ import)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS import_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      filename TEXT NOT NULL,
+      total_records INTEGER NOT NULL,
+      selected_count INTEGER NOT NULL,
+      unselected_count INTEGER NOT NULL,
+      import_time TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
   console.log('✅ Database schema initialized')
 }
 

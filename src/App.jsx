@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import SchemaDetail from './components/SchemaDetail'
+import ExcelImport from './components/ExcelImport'
 import './styles/App.css'
 
 function App() {
@@ -60,6 +61,14 @@ function App() {
           element={
             isAuthenticated ? 
               <SchemaDetail onLogout={handleLogout} /> : 
+              <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/excel-import" 
+          element={
+            isAuthenticated ? 
+              <ExcelImport onLogout={handleLogout} /> : 
               <Navigate to="/login" replace />
           } 
         />

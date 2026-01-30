@@ -97,3 +97,59 @@ export const schemaAPI = {
   },
 }
 
+// Excel API
+export const excelAPI = {
+  upload: async (formData) => {
+    const token = getToken()
+    const response = await fetch(`${API_BASE_URL}/excel/upload`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Upload failed')
+    }
+
+    return data
+  },
+
+  save: async (data) => {
+    return apiRequest('/excel/save', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  },
+
+  getSelected: async (page = 1, limit = 50, importTime = null) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(importTime && { importTime }),
+    })
+    
+    const response = await apiRequest(`/excel/selected?${params}`)
+    return response.data
+  },
+
+  getUnselected: async (page = 1, limit = 50, importTime = null) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(importTime && { importTime }),
+    })
+    
+    const response = await apiRequest(`/excel/unselected?${params}`)
+    return response.data
+  },
+
+  getHistory: async () => {
+    const response = await apiRequest('/excel/history')
+    return response.data || []
+  },
+}
+

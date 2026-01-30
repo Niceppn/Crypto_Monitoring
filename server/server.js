@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
 import schemaRoutes from './routes/schemas.js'
+import excelRoutes from './routes/excel.js'
 import { initializeDatabase, getDatabase } from './config/database.js'
 
 dotenv.config()
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/schemas', schemaRoutes)
+app.use('/api/excel', excelRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
