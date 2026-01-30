@@ -52,6 +52,14 @@ router.get('/unsaved-data', verifyToken, (req, res) => {
     const db = getDatabase()
     const { page = 1, limit = 50, scrapeTime } = req.query
 
+    // Debug: Check sample data from promotion_fees
+    const sampleData = db.prepare('SELECT * FROM promotion_fees LIMIT 3').all()
+    console.log('Sample promotion_fees data:', sampleData) // Debug
+    
+    // Debug: Check sample data from saved_promotion_fees
+    const sampleSaved = db.prepare('SELECT * FROM saved_promotion_fees LIMIT 3').all()
+    console.log('Sample saved_promotion_fees data:', sampleSaved) // Debug
+
     // Use NOT EXISTS to exclude saved items
     let query = `
       SELECT pf.* 
