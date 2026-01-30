@@ -223,6 +223,13 @@ function PromotionFee({ onLogout }) {
                 <div className="data-info">
                   Showing {data.pagination?.total || data.data.length} records
                 </div>
+                {selectedItems.size > 0 && (
+                  <div className="selection-info">
+                    <span className="selected-count-badge">
+                      {selectedItems.size} row{selectedItems.size > 1 ? 's' : ''} selected
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="simple-table-container">
                 <table className="simple-table">

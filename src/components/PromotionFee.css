@@ -252,11 +252,42 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 16px 20px;
+  background: var(--bg-glass);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(20px);
 }
 
 .data-info {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.9rem;
+}
+
+.selection-info {
+  display: flex;
+  align-items: center;
+}
+
+.selected-count-badge {
+  background: var(--accent-gradient);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
 }
 
 .loading-container {
@@ -342,21 +373,25 @@
 
 .simple-table tr.selected-row td {
   color: var(--text-primary);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.1));
-  font-weight: 500;
-}
-
-.simple-table tr:hover {
-  cursor: pointer;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
-}
-
-.simple-table tr.selected-row {
-  cursor: pointer;
-  transform: translateY(-1px) translateX(3px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(167, 139, 250, 0.15)) !important;
+  font-weight: 600;
   border-left: 3px solid var(--accent-primary);
+  position: relative;
+}
+
+.simple-table tr.selected-row td::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-gradient);
+}
+
+.simple-table tr.selected-row:hover {
+  transform: translateY(-2px) translateX(3px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
 }
 
 @media (max-width: 768px) {
