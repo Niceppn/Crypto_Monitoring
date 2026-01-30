@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { promotionAPI, authAPI } from '../services/api'
+import { promotionAPI } from '../services/api'
 import Sidebar from './Sidebar'
-import DataTable from './DataTable'
+import ModernTable from './ModernTable'
 import './SavedItems.css'
 
 function SavedItems({ onLogout }) {
@@ -194,7 +194,7 @@ function SavedItems({ onLogout }) {
                   Showing {data.pagination?.total || data.data.length} saved items
                 </div>
               </div>
-              <DataTable
+              <ModernTable
                 columns={columns}
                 rows={data.data.map(row => ({
                   symbol: row.symbol || '',
