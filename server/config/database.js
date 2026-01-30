@@ -158,6 +158,31 @@ export const initializeDatabase = () => {
     )
   `)
 
+  // Create promotion_fees table (สำหรับข้อมูลที่ scrape จาก Binance)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS promotion_fees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      maker_fee TEXT NOT NULL,
+      taker_fee TEXT NOT NULL,
+      scrape_time TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(symbol, scrape_time)
+    )
+  `)
+
+  // Create scrape_history table (เก็บประวัติการ scrape)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS scrape_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      total_records INTEGER NOT NULL,
+      new_records INTEGER NOT NULL,
+      scrape_time TEXT NOT NULL,
+      status TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
   console.log('✅ Database schema initialized')
 }
 

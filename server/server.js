@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
 import schemaRoutes from './routes/schemas.js'
 import excelRoutes from './routes/excel.js'
+import promotionRoutes from './routes/promotion.js'
 import { initializeDatabase, getDatabase } from './config/database.js'
 
 dotenv.config()
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api/auth', authRoutes)
 app.use('/api/schemas', schemaRoutes)
 app.use('/api/excel', excelRoutes)
+app.use('/api/promotion', promotionRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {

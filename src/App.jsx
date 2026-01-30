@@ -4,6 +4,7 @@ import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import SchemaDetail from './components/SchemaDetail'
 import ExcelImport from './components/ExcelImport'
+import PromotionFee from './components/PromotionFee'
 import './styles/App.css'
 
 function App() {
@@ -69,6 +70,14 @@ function App() {
           element={
             isAuthenticated ? 
               <ExcelImport onLogout={handleLogout} /> : 
+              <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/promotion-fee" 
+          element={
+            isAuthenticated ? 
+              <PromotionFee onLogout={handleLogout} /> : 
               <Navigate to="/login" replace />
           } 
         />

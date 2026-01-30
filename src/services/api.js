@@ -153,3 +153,33 @@ export const excelAPI = {
   },
 }
 
+// Promotion API
+export const promotionAPI = {
+  run: async () => {
+    return apiRequest('/promotion/run', {
+      method: 'POST',
+    })
+  },
+
+  getData: async (page = 1, limit = 50, scrapeTime = null) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(scrapeTime && { scrapeTime }),
+    })
+    
+    const response = await apiRequest(`/promotion/data?${params}`)
+    return response.data
+  },
+
+  getHistory: async () => {
+    const response = await apiRequest('/promotion/history')
+    return response.data || []
+  },
+
+  getStats: async () => {
+    const response = await apiRequest('/promotion/stats')
+    return response.data
+  },
+}
+
