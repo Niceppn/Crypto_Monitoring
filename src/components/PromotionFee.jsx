@@ -25,7 +25,7 @@ function PromotionFee({ onLogout }) {
     try {
       setIsLoading(true)
       setError('')
-      const response = await promotionAPI.getUnsavedData(1, 50, '')
+      const response = await promotionAPI.getData(1, 50, '')
       console.log('API Response:', response) // Debug
       
       // API returns { success: true, data: [...], pagination: {...} }
@@ -235,6 +235,7 @@ function PromotionFee({ onLogout }) {
                   created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
                 }))}
                 pagination={data.pagination}
+                showCheckboxes={true}
                 onSelectionChange={handleSelectionChange}
               />
             </div>
