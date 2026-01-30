@@ -4,6 +4,45 @@
   gap: 20px;
 }
 
+/* Checkbox styles */
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  background: rgba(26, 31, 58, 0.8);
+  transition: all 0.3s ease;
+}
+
+.checkbox-input:checked {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  border-color: var(--accent-blue);
+}
+
+.checkbox-input:hover {
+  border-color: var(--accent-blue);
+  transform: scale(1.1);
+}
+
+.checkbox-header {
+  width: 50px;
+  text-align: center;
+}
+
+.checkbox-cell {
+  width: 50px;
+  text-align: center;
+  padding: 20px 10px !important;
+}
+
+.row-selected {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.08)) !important;
+  border-left: 3px solid var(--accent-blue) !important;
+  transform: translateX(3px);
+}
+
 .table-controls {
   display: flex;
   justify-content: space-between;
@@ -20,6 +59,17 @@
 
 .search-input {
   padding-left: 44px;
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(26, 31, 58, 0.4));
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
 }
 
 .search-icon {
@@ -39,51 +89,80 @@
 
 .table-container {
   overflow-x: auto;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(26, 31, 58, 0.4));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 .table-header {
-  padding: 16px;
+  padding: 20px;
   text-align: left;
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-primary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--border-color);
-  background: var(--bg-tertiary);
+  letter-spacing: 0.8px;
+  border-bottom: 2px solid var(--accent-blue);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
   position: sticky;
   top: 0;
   z-index: 10;
+  backdrop-filter: blur(10px);
 }
 
 .table-row {
-  border-bottom: 1px solid var(--border-color);
-  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  position: relative;
+}
+
+.table-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .table-row:hover {
-  background: rgba(59, 130, 246, 0.05);
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.05));
+  transform: translateX(3px);
+}
+
+.table-row:hover::before {
+  transform: scaleY(1);
 }
 
 .table-row.selected {
-  background: rgba(59, 130, 246, 0.1);
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.1));
   border-left: 3px solid var(--accent-blue);
+  transform: translateX(3px);
 }
 
 .table-cell {
-  padding: 16px;
+  padding: 20px;
   font-size: 14px;
   color: var(--text-primary);
   word-break: break-word;
+  font-weight: 400;
+  border-right: 1px solid rgba(59, 130, 246, 0.05);
+}
+
+.table-cell:last-child {
+  border-right: none;
 }
 
 .no-data {
@@ -109,11 +188,14 @@
 }
 
 .row-details {
-  margin-top: 20px;
-  padding: 24px;
-  border-radius: 12px;
+  margin-top: 24px;
+  padding: 32px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(26, 31, 58, 0.6));
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .row-details-header {
@@ -161,11 +243,18 @@
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px;
-  background: rgba(59, 130, 246, 0.05);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.05));
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.08));
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
 }
 
 .detail-label {
@@ -192,21 +281,23 @@
 }
 
 .pagination-button {
-  padding: 10px 20px;
-  background: var(--bg-tertiary);
+  padding: 12px 24px;
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(26, 31, 58, 0.4));
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--text-primary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pagination-button:hover:not(:disabled) {
-  background: rgba(59, 130, 246, 0.1);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1));
   border-color: var(--accent-blue);
   transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
 }
 
 .pagination-button:disabled {
@@ -221,28 +312,32 @@
 }
 
 .pagination-number {
-  width: 40px;
-  height: 40px;
-  background: var(--bg-tertiary);
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(26, 31, 58, 0.4));
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--text-primary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pagination-number:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1));
   border-color: var(--accent-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
 }
 
 .pagination-number.active {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
   border-color: transparent;
   color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
 }
 
 .pagination-ellipsis {

@@ -150,5 +150,194 @@ router.get('/stats', verifyToken, (req, res) => {
   }
 })
 
+// Save selected items
+router.post('/save-selected', verifyToken, (req, res) => {
+  try {
+    const db = getDatabase()
+    const { items } = req.body
+    
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ error: 'Invalid items data' })
+    }
+
+    const savedItems = []
+    const now = new Date().toISOString()
+
+    // Begin transaction
+    const transaction = db.transaction(() => {
+      items.forEach(item => {
+        // Check if item already exists
+        const existing = db.prepare(`
+          SELECT id FROM saved_promotion_fees 
+          WHERE symbol = ? AND maker_fee = ? AND taker_fee = ? AND scrape_time = ?
+        `).get(
+          item.symbol,
+          item.maker_fee,
+          item.taker_fee,
+          item.scrape_time
+        )
+
+        if (!existing) {
+          // Insert new saved item
+          const result = db.prepare(`
+            INSERT INTO saved_promotion_fees (symbol, maker_fee, taker_fee, scrape_time, created_at, saved_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `).run(
+            item.symbol,
+            item.maker_fee,
+            item.taker_fee,
+            item.scrape_time,
+            item.created_at,
+            now
+          )
+          savedItems.push({ id: result.lastInsertRowid, ...item, saved_at: now })
+        }
+      })
+    })
+
+    transaction()
+
+    res.json({
+      success: true,
+      message: `Saved ${savedItems.length} new items (skipped ${items.length - savedItems.length} duplicates)`,
+      data: savedItems
+    })
+  } catch (error) {
+    console.error('Error saving selected items:', error)
+    res.status(500).json({ error: 'Failed to save selected items' })
+  }
+})
+
+// Get saved items
+router.get('/saved-items', verifyToken, (req, res) => {
+  try {
+    const db = getDatabase()
+    const { page = 1, limit = 50 } = req.query
+
+    const pageNum = parseInt(page)
+    const limitNum = parseInt(limit)
+    const offset = (pageNum - 1) * limitNum
+
+    const rows = db.prepare(`
+      SELECT * FROM saved_promotion_fees 
+      ORDER BY saved_at DESC 
+      LIMIT ? OFFSET ?
+    `).all(limitNum, offset)
+
+    // Get total count
+    const total = db.prepare(`
+      SELECT COUNT(*) as total FROM saved_promotion_fees
+    `).get().total
+
+    res.json({
+      success: true,
+      data: rows,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        totalPages: Math.ceil(total / limitNum)
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching saved items:', error)
+    res.status(500).json({ error: 'Failed to fetch saved items' })
+  }
+})
+
+// Get saved items stats
+router.get('/saved-items-stats', verifyToken, (req, res) => {
+  try {
+    const db = getDatabase()
+    
+    // Get total saved items
+    const totalSavedItems = db.prepare(`
+      SELECT COUNT(*) as total FROM saved_promotion_fees
+    `).get().total
+
+    // Get unique symbols
+    const uniqueSymbols = db.prepare(`
+      SELECT COUNT(DISTINCT symbol) as total FROM saved_promotion_fees
+    `).get().total
+
+    // Get latest saved item
+    const latestSaved = db.prepare(`
+      SELECT * FROM saved_promotion_fees 
+      ORDER BY saved_at DESC 
+      LIMIT 1
+    `).get()
+
+    res.json({
+      success: true,
+      data: {
+        totalSavedItems,
+        uniqueSymbols,
+        latestSaved
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching saved items stats:', error)
+    res.status(500).json({ error: 'Failed to fetch saved items stats' })
+  }
+})
+
+// Delete saved items
+router.delete('/delete-saved', verifyToken, (req, res) => {
+  try {
+    const db = getDatabase()
+    const { items } = req.body
+    
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ error: 'Invalid items data' })
+    }
+
+    const deletedCount = db.transaction(() => {
+      let count = 0
+      items.forEach(item => {
+        const result = db.prepare(`
+          DELETE FROM saved_promotion_fees 
+          WHERE symbol = ? AND maker_fee = ? AND taker_fee = ? AND scrape_time = ?
+        `).run(
+          item.symbol,
+          item.maker_fee,
+          item.taker_fee,
+          item.scrape_time
+        )
+        count += result.changes
+      })
+      return count
+    })()
+
+    res.json({
+      success: true,
+      message: `Deleted ${deletedCount} items`,
+      deletedCount
+    })
+  } catch (error) {
+    console.error('Error deleting saved items:', error)
+    res.status(500).json({ error: 'Failed to delete saved items' })
+  }
+})
+
+// Clear all saved items
+router.delete('/clear-saved', verifyToken, (req, res) => {
+  try {
+    const db = getDatabase()
+    
+    const result = db.prepare(`
+      DELETE FROM saved_promotion_fees
+    `).run()
+
+    res.json({
+      success: true,
+      message: `Cleared ${result.changes} saved items`,
+      deletedCount: result.changes
+    })
+  } catch (error) {
+    console.error('Error clearing saved items:', error)
+    res.status(500).json({ error: 'Failed to clear saved items' })
+  }
+})
+
 export default router
 

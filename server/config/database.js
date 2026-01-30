@@ -171,6 +171,20 @@ export const initializeDatabase = () => {
     )
   `)
 
+  // Create saved_promotion_fees table (สำหรับข้อมูลที่เลือกเก็บไว้)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS saved_promotion_fees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      maker_fee TEXT NOT NULL,
+      taker_fee TEXT NOT NULL,
+      scrape_time TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      saved_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(symbol, maker_fee, taker_fee, scrape_time)
+    )
+  `)
+
   // Create scrape_history table (เก็บประวัติการ scrape)
   database.exec(`
     CREATE TABLE IF NOT EXISTS scrape_history (

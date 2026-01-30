@@ -13,6 +13,8 @@ function PromotionFee({ onLogout }) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [stats, setStats] = useState(null)
+  const [selectedItems, setSelectedItems] = useState(new Set())
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     fetchData()
@@ -76,6 +78,49 @@ function PromotionFee({ onLogout }) {
     }
   }
 
+  const handleSelectionChange = (selectedSet) => {
+    setSelectedItems(selectedSet)
+  }
+
+  const handleSaveSelected = async () => {
+    if (selectedItems.size === 0) {
+      setError('Please select at least one item to save')
+      return
+    }
+
+    setIsSaving(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      // Convert selected item IDs back to row data
+      const selectedRows = []
+      selectedItems.forEach(item => {
+        try {
+          const rowData = JSON.parse(item)
+          selectedRows.push(rowData)
+        } catch (e) {
+          console.error('Error parsing selected item:', e)
+        }
+      })
+
+      // Call API to save selected items
+      const response = await promotionAPI.saveSelectedItems(selectedRows)
+      
+      if (response.success) {
+        setSuccess(`Successfully saved ${selectedItems.size} items!`)
+        setSelectedItems(new Set()) // Clear selection after saving
+      } else {
+        setError('Failed to save selected items')
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to save selected items')
+      console.error('Save error:', err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const handleSidebarLogout = async () => {
     await authAPI.logout()
     if (onLogout) {
@@ -96,20 +141,38 @@ function PromotionFee({ onLogout }) {
               <h1 className="promotion-title">Promotion Fee</h1>
               <p className="promotion-subtitle">Binance Trading Promotion Fees</p>
             </div>
-            <button
-              className="btn btn-primary run-button"
-              onClick={handleRun}
-              disabled={isRunning}
-            >
-              {isRunning ? (
-                <>
-                  <span className="spinner" style={{ width: '16px', height: '16px', marginRight: '8px' }}></span>
-                  Running...
-                </>
-              ) : (
-                '▶ Run Scraper'
-              )}
-            </button>
+            <div className="header-buttons">
+              <button
+                className="btn btn-secondary save-button"
+                onClick={handleSaveSelected}
+                disabled={isSaving || selectedItems.size === 0}
+              >
+                {isSaving ? (
+                  <>
+                    <span className="spinner" style={{ width: '16px', height: '16px', marginRight: '8px' }}></span>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    💾 Save Selected ({selectedItems.size})
+                  </>
+                )}
+              </button>
+              <button
+                className="btn btn-primary run-button"
+                onClick={handleRun}
+                disabled={isRunning}
+              >
+                {isRunning ? (
+                  <>
+                    <span className="spinner" style={{ width: '16px', height: '16px', marginRight: '8px' }}></span>
+                    Running...
+                  </>
+                ) : (
+                  '▶ Run Scraper'
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -172,6 +235,8 @@ function PromotionFee({ onLogout }) {
                   created_at: row.created_at ? new Date(row.created_at).toLocaleString() : ''
                 }))}
                 pagination={data.pagination}
+                showCheckboxes={true}
+                onSelectionChange={handleSelectionChange}
               />
             </div>
           ) : (

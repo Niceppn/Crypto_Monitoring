@@ -87,26 +87,27 @@ def save_to_database(df_new, scrape_time):
     cursor = conn.cursor()
     
     try:
-        # Get existing symbols from current scrape
+        # Get existing symbol+scrape_time combinations for this scrape
         cursor.execute("""
             SELECT DISTINCT symbol FROM promotion_fees 
             WHERE scrape_time = ?
         """, (scrape_time,))
         existing_symbols = {row[0] for row in cursor.fetchall()}
         
-        # Get all existing symbols (from all scrapes)
+        # Get all existing symbols (from all previous scrapes)
         cursor.execute("SELECT DISTINCT symbol FROM promotion_fees")
         all_existing_symbols = {row[0] for row in cursor.fetchall()}
         
         new_count = 0
-        total_count = 0
+        total_new = 0
+        skipped_count = 0
         
         for _, row in df_new.iterrows():
             symbol = row['Symbol']
             maker_fee = row['Maker Fee']
             taker_fee = row['Taker Fee']
             
-            # Check if this symbol already exists in this scrape
+            # Check if this symbol already exists in this scrape time
             if symbol not in existing_symbols:
                 try:
                     cursor.execute("""
@@ -114,16 +115,25 @@ def save_to_database(df_new, scrape_time):
                         VALUES (?, ?, ?, ?)
                     """, (symbol, maker_fee, taker_fee, scrape_time))
                     new_count += 1
-                except sqlite3.IntegrityError:
-                    # Already exists in this scrape, skip
-                    pass
-            
-            # Count if it's new compared to all previous scrapes
-            if symbol not in all_existing_symbols:
-                total_count += 1
+                    
+                    # Count if it's a completely new symbol (never seen before)
+                    if symbol not in all_existing_symbols:
+                        total_new += 1
+                        
+                except sqlite3.IntegrityError as e:
+                    # Duplicate constraint violation (symbol+scrape_time already exists)
+                    skipped_count += 1
+                    print(f"⚠️  ข้าม {symbol} - มีอยู่แล้วใน scrape นี้")
+            else:
+                skipped_count += 1
+                print(f"⚠️  ข้าม {symbol} - มีอยู่แล้วใน scrape นี้")
         
         conn.commit()
-        return new_count, total_count
+        
+        if skipped_count > 0:
+            print(f"⚠️  ข้าม {skipped_count} รายการที่ซ้ำกัน")
+        
+        return new_count, total_new
         
     except Exception as e:
         print(f"❌ Error saving to database: {e}")
@@ -167,6 +177,7 @@ if __name__ == "__main__":
             print(f"✅ บันทึกข้อมูลลง database เรียบร้อย")
         else:
             print("\nℹ️ ข้อมูลเป็นปัจจุบันอยู่แล้ว ไม่พบรายการใหม่")
+            print(f"ℹ️ ข้อมูล scrape ล่าสุด ({scrape_time}) มีอยู่แล้วทั้งหมด")
     else:
         print("\n❌ ไม่พบข้อมูลจากการ Scrape")
         # Save failed scrape history

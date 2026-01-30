@@ -181,5 +181,41 @@ export const promotionAPI = {
     const response = await apiRequest('/promotion/stats')
     return response.data
   },
+
+  // Saved items endpoints
+  saveSelectedItems: async (items) => {
+    return apiRequest('/promotion/save-selected', {
+      method: 'POST',
+      body: JSON.stringify({ items }),
+    })
+  },
+
+  getSavedItems: async (page = 1, limit = 50) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    })
+    
+    const response = await apiRequest(`/promotion/saved-items?${params}`)
+    return response
+  },
+
+  getSavedItemsStats: async () => {
+    const response = await apiRequest('/promotion/saved-items-stats')
+    return response.data
+  },
+
+  deleteSavedItems: async (items) => {
+    return apiRequest('/promotion/delete-saved', {
+      method: 'DELETE',
+      body: JSON.stringify({ items }),
+    })
+  },
+
+  clearAllSavedItems: async () => {
+    return apiRequest('/promotion/clear-saved', {
+      method: 'DELETE',
+    })
+  },
 }
 
