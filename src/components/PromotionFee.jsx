@@ -159,7 +159,7 @@ function PromotionFee({ onLogout }) {
             <div className="data-section glass">
               <div className="data-header">
                 <div className="data-info">
-                  Showing {data.pagination?.total || (data.data ? data.data.length : (Array.isArray(data) ? data.length : 0))} records
+                  Showing {data.pagination?.total || data.data.length} records
                 </div>
               </div>
               <DataTable
@@ -174,7 +174,7 @@ function PromotionFee({ onLogout }) {
                 pagination={data.pagination}
               />
             </div>
-          ) : !isLoading ? (
+          ) : (
             <div className="empty-state">
               <div className="empty-icon">📊</div>
               <p className="empty-text">No data available. Click "Run Scraper" to start scraping.</p>
