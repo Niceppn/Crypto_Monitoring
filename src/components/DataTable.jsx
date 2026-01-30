@@ -146,7 +146,7 @@ function DataTable({ columns, rows, schemaName, pagination: initialPagination, s
             <p>Loading data...</p>
           </div>
         ) : (
-          <table className="data-table">
+          <table className={`data-table ${showCheckboxes ? 'show-checkboxes' : ''}`}>
             <thead>
               <tr>
                 {showCheckboxes && (

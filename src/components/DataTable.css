@@ -46,6 +46,14 @@
   box-sizing: border-box;
 }
 
+/* Add empty space for checkbox column when no checkboxes */
+.data-table th:first-child:not(.checkbox-header),
+.data-table td:first-child:not(.checkbox-cell) {
+  width: 60px;
+  min-width: 60px;
+  background: rgba(59, 130, 246, 0.02);
+}
+
 .row-selected {
   background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.08)) !important;
   border-left: 3px solid var(--accent-blue) !important;
@@ -141,6 +149,37 @@
 .data-table th:nth-child(6),
 .data-table td:nth-child(6) {
   width: 180px; /* Created At column */
+}
+
+/* When checkboxes are shown, shift data columns */
+.data-table.show-checkboxes th:nth-child(2),
+.data-table.show-checkboxes td:nth-child(2) {
+  width: 120px; /* Symbol column */
+}
+
+.data-table.show-checkboxes th:nth-child(3),
+.data-table.show-checkboxes td:nth-child(3) {
+  width: 100px; /* Maker Fee column */
+}
+
+.data-table.show-checkboxes th:nth-child(4),
+.data-table.show-checkboxes td:nth-child(4) {
+  width: 100px; /* Taker Fee column */
+}
+
+.data-table.show-checkboxes th:nth-child(5),
+.data-table.show-checkboxes td:nth-child(5) {
+  width: 180px; /* Scrape Time column */
+}
+
+.data-table.show-checkboxes th:nth-child(6),
+.data-table.show-checkboxes td:nth-child(6) {
+  width: 180px; /* Created At column */
+}
+
+.data-table.show-checkboxes th:nth-child(7),
+.data-table.show-checkboxes td:nth-child(7) {
+  width: auto; /* Extra columns */
 }
 
 /* Remaining columns get auto width */
