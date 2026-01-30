@@ -52,16 +52,17 @@ router.get('/unsaved-data', verifyToken, (req, res) => {
     const db = getDatabase()
     const { page = 1, limit = 50, scrapeTime } = req.query
 
+    // Use NOT EXISTS to exclude saved items
     let query = `
       SELECT pf.* 
       FROM promotion_fees pf
-      LEFT JOIN saved_promotion_fees spf ON (
-        pf.symbol = spf.symbol AND 
-        pf.maker_fee = spf.maker_fee AND 
-        pf.taker_fee = spf.taker_fee AND 
-        pf.scrape_time = spf.scrape_time
+      WHERE NOT EXISTS (
+        SELECT 1 FROM saved_promotion_fees spf 
+        WHERE spf.symbol = pf.symbol 
+          AND spf.maker_fee = pf.maker_fee 
+          AND spf.taker_fee = pf.taker_fee 
+          AND spf.scrape_time = pf.scrape_time
       )
-      WHERE spf.id IS NULL
     `
     const params = []
 
@@ -79,24 +80,30 @@ router.get('/unsaved-data', verifyToken, (req, res) => {
     query += ' LIMIT ? OFFSET ?'
     params.push(limitNum, offset)
 
+    console.log('Unsaved data query:', query) // Debug
+    console.log('Params:', params) // Debug
+
     const rows = db.prepare(query).all(...params)
 
     // Get total count
     let countQuery = `
       SELECT COUNT(*) as total 
       FROM promotion_fees pf
-      LEFT JOIN saved_promotion_fees spf ON (
-        pf.symbol = spf.symbol AND 
-        pf.maker_fee = spf.maker_fee AND 
-        pf.taker_fee = spf.taker_fee AND 
-        pf.scrape_time = spf.scrape_time
+      WHERE NOT EXISTS (
+        SELECT 1 FROM saved_promotion_fees spf 
+        WHERE spf.symbol = pf.symbol 
+          AND spf.maker_fee = pf.maker_fee 
+          AND spf.taker_fee = pf.taker_fee 
+          AND spf.scrape_time = pf.scrape_time
       )
-      WHERE spf.id IS NULL
     `
     if (scrapeTime) {
       countQuery += ' AND pf.scrape_time = ?'
     }
     const total = db.prepare(countQuery).get(scrapeTime ? [scrapeTime] : []).total
+
+    console.log('Unsaved rows found:', rows.length) // Debug
+    console.log('Total unsaved:', total) // Debug
 
     res.json({
       success: true,
@@ -180,6 +187,9 @@ router.post('/save-selected', verifyToken, (req, res) => {
       return res.status(400).json({ error: 'Invalid items data' })
     }
 
+    console.log('Saving items:', items.length) // Debug
+    console.log('Sample item:', items[0]) // Debug
+
     const savedItems = []
     const now = new Date().toISOString()
 
@@ -211,11 +221,18 @@ router.post('/save-selected', verifyToken, (req, res) => {
             now
           )
           savedItems.push({ id: result.lastInsertRowid, ...item, saved_at: now })
+          console.log('Saved item:', item.symbol) // Debug
+        } else {
+          console.log('Item already saved:', item.symbol) // Debug
         }
       })
     })
 
     transaction()
+
+    // Check total saved items after save
+    const totalSaved = db.prepare('SELECT COUNT(*) as total FROM saved_promotion_fees').get().total
+    console.log('Total saved items after save:', totalSaved) // Debug
 
     res.json({
       success: true,

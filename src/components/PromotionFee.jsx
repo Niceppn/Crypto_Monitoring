@@ -26,6 +26,7 @@ function PromotionFee({ onLogout }) {
       setError('')
       const response = await promotionAPI.getUnsavedData(1, 50, '')
       console.log('API Response:', response) // Debug
+      console.log('Data length:', response?.data?.length) // Debug
       
       // API returns { success: true, data: [...], pagination: {...} }
       if (response && response.success && response.data) {
@@ -104,10 +105,13 @@ function PromotionFee({ onLogout }) {
         try {
           const rowData = JSON.parse(item)
           selectedRows.push(rowData)
+          console.log('Preparing to save:', rowData) // Debug
         } catch (e) {
           console.error('Error parsing selected item:', e)
         }
       })
+
+      console.log('Sending to API:', selectedRows.length, 'items') // Debug
 
       // Call API to save selected items
       const response = await promotionAPI.saveSelectedItems(selectedRows)
@@ -115,6 +119,9 @@ function PromotionFee({ onLogout }) {
       if (response.success) {
         setSuccess(`Successfully saved ${selectedItems.size} items!`)
         setSelectedItems(new Set()) // Clear selection after saving
+        
+        // Refresh data to exclude saved items
+        await fetchData()
       } else {
         setError('Failed to save selected items')
       }
