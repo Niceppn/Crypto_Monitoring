@@ -26,9 +26,9 @@ function PromotionFee({ onLogout }) {
       const response = await promotionAPI.getData(1, 50, '')
       console.log('API Response:', response) // Debug
       
-      // API returns { success: true, data: {...}, pagination: {...} }
+      // API returns { success: true, data: [...], pagination: {...} }
       if (response && response.success && response.data) {
-        setData(response.data)
+        setData(response)
       } else if (response && response.data) {
         setData(response)
       } else {
