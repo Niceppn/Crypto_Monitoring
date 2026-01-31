@@ -278,3 +278,48 @@ export const collectorAPI = {
   },
 }
 
+// Bot API
+export const botAPI = {
+  getAll: async () => {
+    const response = await apiRequest('/bots')
+    return response.data || []
+  },
+
+  getById: async (botId) => {
+    const response = await apiRequest(`/bots/${botId}`)
+    return response.data
+  },
+
+  start: async (botId) => {
+    return apiRequest(`/bots/${botId}/start`, { method: 'POST' })
+  },
+
+  stop: async (botId) => {
+    return apiRequest(`/bots/${botId}/stop`, { method: 'POST' })
+  },
+
+  restart: async (botId) => {
+    return apiRequest(`/bots/${botId}/restart`, { method: 'POST' })
+  },
+
+  getStats: async (botId) => {
+    const response = await apiRequest(`/bots/${botId}/stats`)
+    return response.data
+  }
+}
+
+// Logs API
+export const logsAPI = {
+  getLogs: async (botId, page = 1, limit = 100) => {
+    const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() })
+    const response = await apiRequest(`/logs/${botId}?${params}`)
+    return response
+  },
+
+  getTailLogs: async (botId, lines = 100) => {
+    const params = new URLSearchParams({ lines: lines.toString() })
+    const response = await apiRequest(`/logs/${botId}/tail?${params}`)
+    return response.data || []
+  }
+}
+

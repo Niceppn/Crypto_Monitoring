@@ -7,6 +7,8 @@ import ExcelImport from './components/ExcelImport'
 import PromotionFee from './components/PromotionFee'
 import SavedItems from './components/SavedItems'
 import CryptoCollector from './components/CryptoCollector'
+import BotDashboard from './components/BotDashboard'
+import BotDetail from './components/BotDetail'
 import './styles/App.css'
 
 function App() {
@@ -96,6 +98,22 @@ function App() {
           element={
             isAuthenticated ?
               <CryptoCollector onLogout={handleLogout} /> :
+              <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/bots"
+          element={
+            isAuthenticated ?
+              <BotDashboard onLogout={handleLogout} /> :
+              <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/bots/:botId"
+          element={
+            isAuthenticated ?
+              <BotDetail onLogout={handleLogout} /> :
               <Navigate to="/login" replace />
           }
         />

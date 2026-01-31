@@ -236,6 +236,47 @@ export const initializeDatabase = () => {
     )
   `)
 
+  // Create bots table
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS bots (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT NOT NULL,
+      script_path TEXT NOT NULL,
+      script_args TEXT,
+      log_path TEXT,
+      status TEXT NOT NULL DEFAULT 'stopped',
+      pid INTEGER,
+      started_at TEXT,
+      stopped_at TEXT,
+      restart_count INTEGER DEFAULT 0,
+      auto_restart INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  // Create bot_logs table
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS bot_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bot_id INTEGER NOT NULL,
+      level TEXT NOT NULL,
+      message TEXT NOT NULL,
+      timestamp TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (bot_id) REFERENCES bots(id) ON DELETE CASCADE
+    )
+  `)
+
+  // Indexes for performance
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_bot_logs_bot_id ON bot_logs(bot_id)
+  `)
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_bot_logs_timestamp ON bot_logs(timestamp)
+  `)
+
   console.log('✅ Database schema initialized')
 }
 

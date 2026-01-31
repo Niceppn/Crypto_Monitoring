@@ -6,6 +6,8 @@ import schemaRoutes from './routes/schemas.js'
 import excelRoutes from './routes/excel.js'
 import promotionRoutes from './routes/promotion.js'
 import collectorRoutes from './routes/collector.js'
+import botRoutes from './routes/bots.js'
+import logRoutes from './routes/logs.js'
 import { initializeDatabase, getDatabase } from './config/database.js'
 
 dotenv.config()
@@ -27,6 +29,8 @@ app.use('/api/schemas', schemaRoutes)
 app.use('/api/excel', excelRoutes)
 app.use('/api/promotion', promotionRoutes)
 app.use('/api/collector', collectorRoutes)
+app.use('/api/bots', botRoutes)
+app.use('/api/logs', logRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
