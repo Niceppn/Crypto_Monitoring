@@ -197,6 +197,45 @@ export const initializeDatabase = () => {
     )
   `)
 
+  // Create crypto_trades table (สำหรับเก็บข้อมูล trade จาก WebSocket)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS crypto_trades (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL,
+      timestamp_ms INTEGER NOT NULL,
+      readable_time TEXT NOT NULL,
+      price REAL NOT NULL,
+      quantity REAL NOT NULL,
+      side TEXT NOT NULL,
+      is_maker INTEGER NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  // Create index for faster queries
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_crypto_trades_symbol
+    ON crypto_trades(symbol)
+  `)
+
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_crypto_trades_timestamp
+    ON crypto_trades(timestamp_ms)
+  `)
+
+  // Create collector_status table (เก็บสถานะของ collector)
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS collector_status (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      symbol TEXT NOT NULL UNIQUE,
+      is_running INTEGER NOT NULL DEFAULT 0,
+      pid INTEGER,
+      started_at TEXT,
+      stopped_at TEXT,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
   console.log('✅ Database schema initialized')
 }
 

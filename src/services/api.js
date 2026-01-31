@@ -231,3 +231,50 @@ export const promotionAPI = {
   },
 }
 
+// Collector API
+export const collectorAPI = {
+  start: async (symbol) => {
+    return apiRequest('/collector/start', {
+      method: 'POST',
+      body: JSON.stringify({ symbol }),
+    })
+  },
+
+  stop: async (symbol) => {
+    return apiRequest('/collector/stop', {
+      method: 'POST',
+      body: JSON.stringify({ symbol }),
+    })
+  },
+
+  getStatus: async (symbol = null) => {
+    const params = symbol ? `?symbol=${symbol}` : ''
+    const response = await apiRequest(`/collector/status${params}`)
+    return response.data
+  },
+
+  getStats: async (symbol = null) => {
+    const params = symbol ? `?symbol=${symbol}` : ''
+    const response = await apiRequest(`/collector/stats${params}`)
+    return response.data
+  },
+
+  getTrades: async (symbol = null, page = 1, limit = 50) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(symbol && { symbol }),
+    })
+
+    const response = await apiRequest(`/collector/trades?${params}`)
+    return response
+  },
+
+  clearTrades: async (symbol) => {
+    return apiRequest('/collector/clear', {
+      method: 'DELETE',
+      body: JSON.stringify({ symbol }),
+    })
+  },
+}
+

@@ -6,6 +6,7 @@ import SchemaDetail from './components/SchemaDetail'
 import ExcelImport from './components/ExcelImport'
 import PromotionFee from './components/PromotionFee'
 import SavedItems from './components/SavedItems'
+import CryptoCollector from './components/CryptoCollector'
 import './styles/App.css'
 
 function App() {
@@ -82,19 +83,27 @@ function App() {
               <Navigate to="/login" replace />
           } 
         />
-        <Route 
-          path="/saved-items" 
+        <Route
+          path="/saved-items"
           element={
-            isAuthenticated ? 
-              <SavedItems onLogout={handleLogout} /> : 
+            isAuthenticated ?
+              <SavedItems onLogout={handleLogout} /> :
               <Navigate to="/login" replace />
-          } 
+          }
         />
-        <Route 
-          path="/" 
+        <Route
+          path="/crypto-collector"
+          element={
+            isAuthenticated ?
+              <CryptoCollector onLogout={handleLogout} /> :
+              <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/"
           element={
             <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
-          } 
+          }
         />
       </Routes>
     </Router>
